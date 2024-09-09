@@ -1,38 +1,109 @@
 .App {
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App .app {
+  width: min(100%, 850px);
+  height: 100%;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app header {
+  width: 100%;
+  padding: 10px 20px;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app header, li, .li-img {
+  display: flex;
+  align-items: center;
+}
+h3, h2, ul, li {
+  margin: 0;
+  padding: 0;
+}
+.user h3, .connected h3 {
+  padding: 10px;
+}
+.wallet, .task-btn {
+  width: max-content;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 15px;
+  background-color: rgb(40, 145, 250);
+  border-radius: 10px;
+}
+.cursor {
+  cursor: pointer;
+}
+.app main {
+  width: 100%;
+}
+main .first {
+  padding: 10px;
+}
+.connected {
+  width: 100%;
+  padding: 10px;
+}
+ul, li {
+    list-style: none;
+}
+ul li {
+  width: 100%;
+  padding: 10px 0px;
+  padding-right: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.li-img {
+  width: 45px;
+  height: 45px;
+}
+.li-txt {
+  flex-grow: 2;
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.txt-big {
+  font-size: 15px;
+  font-weight: 500;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.txt-small {
+  margin-top: 5px;
+  font-size: 14px;
+}
+.task-btn {
+  padding: 6px 15px;
+  margin-left: 10px;
+  border: none;
+}
+.task-done {
+  padding: 6px 15px;
+  margin-left: 10px;
+  border: 1px solid #e2e8f0;
+  width: max-content !important;
+}
+.user h3 {
+  padding: 10px 20px;
+}
+a {
+  text-decoration: none;
+}
+.li-img img {
+  width: 95%;
+  height: 95%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.message {
+  width: max-content !important;
+  height: max-content !important;
+  background-color: #fff;
+  padding: 15px;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.1);
 }
