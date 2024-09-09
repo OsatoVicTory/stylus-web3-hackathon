@@ -14,28 +14,38 @@ function App() {
   const [signer, setSigner] = useState('');
   const [message, setMessage] = useState('');
   const [connecting, setConnecting] = useState(false);
-  const [completing, setCompleting] = useState(false);
+  const [claiming, setClaiming] = useState(false);
+  const [clicked, setClicked] = useState([]);
+  const message_timer = 2500;
 
   const Tasks = [
     {name:'Join Telegram', point:500, task: 'https://t.me/+JGur_ErNHq44MTM8', img: tg, task_id: 'tg1'},
     {name:'Follow on X', point:500, task: 'https://x.com/dappsoverapps?t=l_YhagW_N3dKAMFJKhnRyw&s=08', img: x, task_id: 'x1'},
     {name:'Enter Hackathon', point:1000, task: 'https://dorahacks.io/hackathon/dappsoverapps/hackers', img: logo, task_id: 'hack1'},
+    {name:'Like Post on X', point:250, task: 'https://x.com/dappsoverapps/status/1832768631907983829?t=dSIYLZF2SaXQh2an51dMWA&s=19', 
+      img: x, completed: false, task_id: 'x2'},
   ];
   const [tasks, setTasks]  =  useState([
     {name:'Join Telegram', point:500, task: 'https://t.me/+JGur_ErNHq44MTM8', img: tg, completed: false, task_id: 'tg1'},
     {name:'Follow on X', point:500, task: 'https://x.com/dappsoverapps?t=l_YhagW_N3dKAMFJKhnRyw&s=08', img: x, completed: false, task_id: 'x1'},
     {name:'Enter Hackathon', point:1000, task: 'https://dorahacks.io/hackathon/dappsoverapps/hackers', img: logo, completed: false, task_id: 'hack1'},
+    {name:'Like Post on X', point:250, task: 'https://x.com/dappsoverapps/status/1832768631907983829?t=dSIYLZF2SaXQh2an51dMWA&s=19', 
+      img: x, completed: false, task_id: 'x2'},
   ]);
 
   function orgTasks(array) {
     const arr = Array.from(array);
-    console.log('arr', arr);
     const uncompleted = tasks.filter((val, idx) => !arr.includes(val.task_id));
     const completed = tasks.filter((val, idx) => arr.includes(val.task_id));
     return [
       ...uncompleted.map(val => ({ ...val, completed: false })), 
       ...completed.map(val => ({ ...val, completed: true }))
     ];
+  };
+
+  function div(val) {
+    const res = String(val);
+    return (res.slice(0, res.length - 18)) - 0;
   };
 
   
@@ -53,23 +63,34 @@ function App() {
     const contractInstance = await new Contract(contractAddress, abi, signer_val);
     const userPoints = await contractInstance.getPoints(signerAddress);
     const userTasks = await contractInstance.getTasks(signerAddress);
-    console.log(signerAddress, contractInstance, userPoints, userTasks);
     setSigner(signer);
     setContract(contractInstance);
     setUser(signerAddress);
-    setPoints(parseInt(userPoints.toString()));
+    setPoints(div(parseInt(userPoints.toString())));
     setTasks(orgTasks(userTasks));
     setMessage('Welcome '+signerAddress);
     setConnecting(false);
-    setTimeout(() => { setMessage(''); }, 1500);
+    setTimeout(() => { setMessage(''); }, message_timer);
   };
 
+  const anchorClicked = (val) => {
+    setClicked([...clicked, val.task_id]);
+  };
 
-  const handleClick = async (val) => {
-    if(val.completed) return;
+  const handleClaim = async (val) => {
+    if(claiming) {
+      setMessage('Currently processing a request!');
+      setTimeout(() => { setMessage(''); }, message_timer);
+      return 
+    }
+    if(val.completed) {
+      setMessage('Task completed already!');
+      setTimeout(() => { setMessage(''); }, message_timer);
+      return;
+    }
     if (contract && user) {
       try {
-        setCompleting(val.task_id);
+        setClaiming(val.task_id);
         // Increment user points on the blockchain
         const tx = await contract.completeTask(user, parseUnits(''+val.point, 18), val.task_id);
         await tx.wait(); // Wait for transaction to be mined
@@ -77,13 +98,14 @@ function App() {
         setPoints(points + val.point);
         setTasks(orgTasks(arr));
         setMessage('Task Completed!');
-        setTimeout(() => { setMessage(''); }, 1500);
-        setCompleting(false);
+        setTimeout(() => { setMessage(''); }, message_timer);
+        setClaiming(false);
+        setClicked(clicked.filter(task_id => task_id !== val.task_id));
       } catch (error) {
         console.error('Error incrementing points:', error);
         setMessage('Error completing task');
-        setCompleting(false);
-        setTimeout(() => { setMessage(''); }, 1500);
+        setClaiming(false);
+        setTimeout(() => { setMessage(''); }, message_timer);
       }
     }
   };
@@ -94,9 +116,14 @@ function App() {
   };
 
   function connectWallet() {
+    if(user) {
+      setMessage('Wallet active, refresh page to connect new wallet');
+      setTimeout(() => { setMessage(''); }, message_timer);
+      return;
+    }
     if (!window.ethereum) {
       setMessage('Install Metamask extension!');
-      setTimeout(() => { setMessage(''); }, 1500);
+      setTimeout(() => { setMessage(''); }, message_timer);
       return;
     }
 
@@ -104,14 +131,14 @@ function App() {
       console.error('Error connecting wallet', error);
       setMessage('Error connecting wallet');
       setConnecting(false);
-      setTimeout(() => { setMessage(''); }, 1500);
+      setTimeout(() => { setMessage(''); }, message_timer);
     });
   };
 
   return (
     <div className="App">
       <div className='app'>
-        {message && <div className='message'>{message}</div>}
+        <div className={`message ${message ? true : false}`}>{message}</div>
         <header>
           <h2>Earn Points</h2>
           <div className='wallet cursor' onClick={()=>connectWallet()}>
@@ -123,7 +150,7 @@ function App() {
             <h3>User: {user||'Connect wallet'}</h3>
           </div>
           {user && <div className='connected'>
-            <h3>Your Points: {points}</h3>
+            <h3>Your Claimed tokens: {points} wETH</h3>
             <div className='app-main'>
               <ul className='app-ul'>
                 {tasks.map((val, idx) => (
@@ -133,12 +160,15 @@ function App() {
                     </div>
                     <div className='li-txt'>
                       <span className='txt-big'>{val.name}</span>
-                      <span className='txt-small'>+{val.point} points</span>
+                      <span className='txt-small'>+{val.point} wETH</span>
                     </div>
-                    {completing === val.task_id ?
-                      <div className='task-btn'>Completing...</div> : 
+                    {
+                      claiming === val.task_id ?
+                      <div className='task-btn'>Claiming...</div> : 
+                      clicked.includes(val.task_id) ?
+                      <div className='task-btn cursor' onClick={() => handleClaim(val)}>Claim</div> :
                       !val.completed ? 
-                      <a href={val.task} target='_blank' className='task-btn' onClick={() => handleClick(val)}>Start</a> :
+                      <a href={val.task} target='_blank' className='task-btn' onClick={() => anchorClicked(val)}>Start</a> :
                       <div className='task-done'>Done</div> 
                     }
                   </li>
