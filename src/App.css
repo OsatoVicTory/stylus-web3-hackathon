@@ -14,7 +14,7 @@
   justify-content: space-between;
   border-bottom: 1px solid #e2e8f0;
 }
-.app header, li, .li-img {
+.app header, li, .li-img, .t-header, .activity-header {
   display: flex;
   align-items: center;
 }
@@ -22,16 +22,30 @@ h3, h2, ul, li {
   margin: 0;
   padding: 0;
 }
+.t-header-icon, .activity-header-icon {
+  width: 27px;
+  height: 24px;
+}
 .user h3, .connected h3 {
   padding: 10px;
 }
-.wallet, .task-btn {
+.wallet, .task-btn, .send-btn, .user-btn {
   width: max-content;
   padding: 10px 15px;
   color: #fff;
   font-size: 15px;
   background-color: rgb(40, 145, 250);
   border-radius: 10px;
+}
+.user-btn {
+  padding: 6px 15px;
+}
+.user-btn.b {
+  margin-left: 12px;
+  color: black;
+  font-weight: 400;
+  border: 1px solid #a5a4a4;
+  background-color: #fff;
 }
 .cursor {
   cursor: pointer;
@@ -41,6 +55,27 @@ h3, h2, ul, li {
 }
 main .first {
   padding: 10px;
+}
+.home {
+  width: 100%;
+}
+.user {
+  margin-top: 12px;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.user > div {
+  width: max-content;
+  display: flex;
+  align-items: center;
+}
+.no-user {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
 }
 .connected {
   width: 100%;
@@ -83,9 +118,10 @@ ul li {
   margin-left: 10px;
   border: 1px solid #e2e8f0;
   width: max-content !important;
+  border-radius: 8px;
 }
 .user h3 {
-  padding: 10px 20px;
+  padding: 0;
 }
 a {
   text-decoration: none;
@@ -113,4 +149,49 @@ a {
 }
 .cursor {
   cursor: pointer;
+}
+.transfer {
+  width: 100%;
+  padding: 10px 20px;
+}
+.transfer .user {
+  padding: 8px 0px;
+  margin-top: 5px;
+}
+.transfer h2, .activity-header h2 {
+  margin: 10px 10px;
+}
+.transfer-field {
+  margin-top: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.transfer-field input {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  font-family: inherit;
+}
+.send {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+.send-btn {
+  padding: 10px 20px;
+}
+
+@media screen and (max-width: 750px) {
+  .user {
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+  }
+  .user > div {
+    margin-top: 12px;
+    width: 100%;
+  }
 }
