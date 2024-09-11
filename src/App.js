@@ -3,7 +3,7 @@ import { Contract, BrowserProvider } from "ethers";
 import { Routes, Route } from 'react-router-dom';
 import abi from './contractABI.json';
 import './App.css';
-import Activity from './Activity';
+import Activity from './activity';
 import AppHome from './home';
 import Transfer from './transfer';
 import { setMessageFn, shorten, Tasks, orgTasks } from './helpers';
