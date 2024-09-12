@@ -65,7 +65,7 @@ function App() {
       <div className='app'>
         <div className={`message ${message ? true : false}`}>{message}</div>
         <header>
-          <h2>Earn Points</h2>
+          <h2>Earn Rewards</h2>
           <div className='wallet cursor' onClick={()=>connectWallet()}>
             {connecting ? 'Connecting...' : shorten(user)||'Connect wallet'}
           </div>
