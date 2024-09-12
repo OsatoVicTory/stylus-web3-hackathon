@@ -99,7 +99,7 @@ const Activity = ({ user, activity, setActivity, setMessage, contract }) => {
                 {activityLists.length === 0 ? 
                     <NoActivity /> :
                     <ul className="activity-lists">
-                        {activityLists.map((val, idx) => (
+                        {activityLists.reverse().map((val, idx) => (
                             <li className="activity-li" key={`al-${idx}`}>
                                 <ActivityList val={val} isMobile={isMobile} />
                             </li>
